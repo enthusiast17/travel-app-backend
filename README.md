@@ -1,6 +1,6 @@
 # travel-app-backend
 
-This is a backend repository for [client repository](https://github.com/rolling-scopes-school/tasks/blob/master/tasks/react/travel-app.md).
+This is a backend repository for [client repository](https://github.com/petrgali/travel-app).
 
 **Technologies:**
 - TypeScript

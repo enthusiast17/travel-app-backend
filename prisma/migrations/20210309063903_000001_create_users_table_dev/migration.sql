@@ -2,7 +2,7 @@
 CREATE TABLE "User" (
     "id" TEXT NOT NULL PRIMARY KEY,
     "username" TEXT NOT NULL,
-    "avatar" TEXT NOT NULL,
+    "avatar" TEXT,
     "password" TEXT NOT NULL
 );
 

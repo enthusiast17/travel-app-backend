@@ -6,6 +6,7 @@ This is a backend repository for [client repository](https://github.com/petrgali
 - TypeScript
 - Nest.js
 - Prisma
+- SQLite
 
 **Setup:**
 

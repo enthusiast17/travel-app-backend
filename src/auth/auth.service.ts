@@ -80,4 +80,11 @@ export class AuthService {
       ),
     };
   }
+
+  async isUsernameExists(username: string): Promise<boolean> {
+    const foundUserByUsername: User = await this.usersService.findUserByUsername(
+      username,
+    );
+    return foundUserByUsername ? true : false;
+  }
 }

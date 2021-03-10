@@ -17,7 +17,6 @@ export class AuthController {
   async register(
     @Body() registerDto: RegisterDto,
   ): Promise<{ user: IUserHided; tokens: IAuthTokens }> {
-    console.log(registerDto.username);
     if (await this.authService.isUsernameExists(registerDto.username)) {
       throw new HttpException(
         {

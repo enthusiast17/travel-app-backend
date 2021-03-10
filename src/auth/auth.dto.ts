@@ -34,7 +34,7 @@ export class RegisterDto {
   @IsOptional()
   @IsString({ message: 'Avatar must be a string' })
   @IsNotEmpty({ message: "Avatar can't be empty" })
-  avatar: string;
+  avatar?: string;
 }
 
 export class LoginDto {

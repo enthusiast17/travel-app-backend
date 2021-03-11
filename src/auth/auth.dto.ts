@@ -1,5 +1,6 @@
 import {
   IsAlphanumeric,
+  IsBase64,
   IsNotEmpty,
   IsOptional,
   IsString,
@@ -32,7 +33,7 @@ export class RegisterDto {
   password: string;
 
   @IsOptional()
-  @IsString({ message: 'Avatar must be a string' })
+  @IsBase64({ message: 'Avatar must be a base64' })
   @IsNotEmpty({ message: "Avatar can't be empty" })
   avatar?: string;
 }

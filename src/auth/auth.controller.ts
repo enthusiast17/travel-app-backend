@@ -17,6 +17,10 @@ export class AuthController {
   async register(
     @Body() registerDto: RegisterDto,
   ): Promise<{ user: IUserHided; tokens: IAuthTokens }> {
+    console.log(
+      Buffer.from(registerDto.avatar, 'base64').toString('binary').length,
+    );
+
     if (await this.authService.isUsernameExists(registerDto.username)) {
       throw new HttpException(
         {
@@ -28,7 +32,21 @@ export class AuthController {
       );
     }
 
-    // TO-DO: Add avatar upload checker
+    if (registerDto.avatar) {
+      const avatarSize = Buffer.from(registerDto.avatar, 'base64').toString(
+        'binary',
+      ).length;
+      if (avatarSize > 1000000) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'Avatar is too large. Avatar must be smaller than 1 MB',
+            error: 'Bad Request',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+    }
 
     return this.authService.register(registerDto);
   }

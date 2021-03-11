@@ -6,7 +6,7 @@ import {
   Post,
 } from '@nestjs/common';
 import { LoginDto, RegisterDto } from './auth.dto';
-import { IAuthTokens, IUserHided } from './auth.interface';
+import { IAuthToken } from './auth.interface';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -14,13 +14,7 @@ export class AuthController {
   constructor(private authService: AuthService) {}
 
   @Post('/register')
-  async register(
-    @Body() registerDto: RegisterDto,
-  ): Promise<{ user: IUserHided; tokens: IAuthTokens }> {
-    console.log(
-      Buffer.from(registerDto.avatar, 'base64').toString('binary').length,
-    );
-
+  async register(@Body() registerDto: RegisterDto): Promise<IAuthToken> {
     if (await this.authService.isUsernameExists(registerDto.username)) {
       throw new HttpException(
         {
@@ -52,7 +46,7 @@ export class AuthController {
   }
 
   @Post('/login')
-  async login(@Body() loginDto: LoginDto): Promise<IAuthTokens> {
+  async login(@Body() loginDto: LoginDto): Promise<IAuthToken> {
     const response = await this.authService.login(
       loginDto.username,
       loginDto.password,

@@ -5,7 +5,6 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { PrismaService } from 'prisma/prisma.service';
 import { IUser } from 'src/users/user.interface';
 import { UsersService } from 'src/users/users.service';
-import { IUserHided } from './auth.interface';
 import { AuthService } from './auth.service';
 
 describe('AuthService', () => {
@@ -37,22 +36,11 @@ describe('AuthService', () => {
     avatar: null,
   };
 
-  const hidedUser: IUserHided = {
-    username: testUser.username,
-    avatar: testUser.avatar,
-  };
-
   it('register user', async () => {
     const registeredUser = await service.register(testUser);
-    expect(registeredUser.user).toStrictEqual(hidedUser);
-    expect(registeredUser.tokens).not.toBeUndefined();
-    expect(registeredUser.tokens.accessToken).not.toBeUndefined();
-    expect(registeredUser.tokens.refreshToken).not.toBeUndefined();
-    expect(registeredUser.tokens.accessToken).not.toBe('');
-    expect(registeredUser.tokens.refreshToken).not.toBe('');
-    expect(registeredUser.tokens.accessToken).not.toStrictEqual(
-      registeredUser.tokens.refreshToken,
-    );
+    expect(registeredUser).not.toBeUndefined();
+    expect(registeredUser.refreshToken).not.toBeUndefined();
+    expect(registeredUser.refreshToken).not.toBe('');
   });
 
   it('login user', async () => {
@@ -61,11 +49,8 @@ describe('AuthService', () => {
       testUser.password,
     );
     expect(loginedUser).not.toBeUndefined();
-    expect(loginedUser.accessToken).not.toBeUndefined();
     expect(loginedUser.refreshToken).not.toBeUndefined();
-    expect(loginedUser.accessToken).not.toBe('');
     expect(loginedUser.refreshToken).not.toBe('');
-    expect(loginedUser.accessToken).not.toStrictEqual(loginedUser.refreshToken);
   });
 
   afterAll(async () => {

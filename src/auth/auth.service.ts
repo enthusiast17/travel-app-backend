@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { genSalt, hash, compare } from 'bcrypt';
 import { IUser } from 'src/users/user.interface';
 import { UsersService } from 'src/users/users.service';
-import { IAuthTokens, IJWTData, IUserHided } from './auth.interface';
+import { IAuthToken, IJWTData } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -25,12 +25,7 @@ export class AuthService {
     });
   }
 
-  async register(
-    user: IUser,
-  ): Promise<{
-    user: IUserHided;
-    tokens: IAuthTokens;
-  }> {
+  async register(user: IUser): Promise<IAuthToken> {
     const salt = await genSalt(parseFloat(process.env.SALT_NUMBER));
     const hashedPassword = await hash(user.password, salt);
     const registeredUser = await this.usersService.createUser({
@@ -42,26 +37,15 @@ export class AuthService {
       username: registeredUser.username,
     };
     return {
-      user: {
-        username: registeredUser.username,
-        avatar: registeredUser.avatar,
-      },
-      tokens: {
-        refreshToken: await this.generateToken(
-          jwtData,
-          process.env.REFRESH_TOKEN_KEY,
-          process.env.REFRESH_TOKEN_EXP,
-        ),
-        accessToken: await this.generateToken(
-          jwtData,
-          process.env.ACCESS_TOKEN_KEY,
-          process.env.ACCESS_TOKEN_EXP,
-        ),
-      },
+      refreshToken: await this.generateToken(
+        jwtData,
+        process.env.REFRESH_TOKEN_KEY,
+        process.env.REFRESH_TOKEN_EXP,
+      ),
     };
   }
 
-  async login(username: string, password: string): Promise<IAuthTokens | null> {
+  async login(username: string, password: string): Promise<IAuthToken | null> {
     const user: User = await this.usersService.findUserByUsername(username);
     if (!user || !(await compare(password, user.password))) {
       return null;
@@ -72,11 +56,6 @@ export class AuthService {
         jwtData,
         process.env.REFRESH_TOKEN_KEY,
         process.env.REFRESH_TOKEN_EXP,
-      ),
-      accessToken: await this.generateToken(
-        jwtData,
-        process.env.ACCESS_TOKEN_KEY,
-        process.env.ACCESS_TOKEN_EXP,
       ),
     };
   }

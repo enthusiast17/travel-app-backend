@@ -45,10 +45,8 @@ describe('AuthController', () => {
 
   it('register valid user', async () => {
     const registeredUser = await controller.register(testUser);
-    expect(registeredUser.user).not.toBeUndefined();
-    expect(registeredUser.tokens).not.toBeUndefined();
-    expect(registeredUser.tokens.accessToken).not.toBeUndefined();
-    expect(registeredUser.tokens.refreshToken).not.toBeUndefined();
+    expect(registeredUser).not.toBeUndefined();
+    expect(registeredUser.refreshToken).not.toBeUndefined();
   });
 
   it('register existed user', async () => {

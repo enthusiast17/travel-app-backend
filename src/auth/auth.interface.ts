@@ -1,6 +1,5 @@
-export interface IAuthTokens {
+export interface IAuthToken {
   refreshToken: string;
-  accessToken: string;
 }
 
 export interface IJWTData {
@@ -11,9 +10,4 @@ export interface IJWTData {
 export interface IJWTSign extends IJWTData {
   iat: number;
   exp: number;
-}
-
-export interface IUserHided {
-  username: string;
-  avatar: string | null;
 }

@@ -1,12 +1,16 @@
 import {
   Body,
   Controller,
+  ForbiddenException,
+  Get,
   HttpException,
   HttpStatus,
   Post,
+  Request,
 } from '@nestjs/common';
+import { ExtractJwt } from 'passport-jwt';
 import { LoginDto, RegisterDto } from './auth.dto';
-import { IAuthToken } from './auth.interface';
+import { IAuthToken, IUserHided } from './auth.interface';
 import { AuthService } from './auth.service';
 
 @Controller('auth')
@@ -61,6 +65,19 @@ export class AuthController {
         },
         HttpStatus.BAD_REQUEST,
       );
+    }
+
+    return response;
+  }
+
+  @Get('/me')
+  async me(@Request() request): Promise<IUserHided> {
+    const response = await this.authService.me(
+      ExtractJwt.fromAuthHeaderAsBearerToken()(request),
+    );
+
+    if (!response) {
+      throw new ForbiddenException();
     }
 
     return response;

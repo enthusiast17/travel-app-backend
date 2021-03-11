@@ -4,7 +4,7 @@ import { User } from '@prisma/client';
 import { genSalt, hash, compare } from 'bcrypt';
 import { IUser } from 'src/users/user.interface';
 import { UsersService } from 'src/users/users.service';
-import { IAuthToken, IJWTData } from './auth.interface';
+import { IAuthToken, IJWTData, IJWTSign, IUserHided } from './auth.interface';
 
 @Injectable()
 export class AuthService {
@@ -58,6 +58,23 @@ export class AuthService {
         process.env.REFRESH_TOKEN_EXP,
       ),
     };
+  }
+
+  async me(refreshToken: string): Promise<IUserHided | null> {
+    try {
+      const verifiedToken: IJWTSign = this.jwtService.verify(refreshToken, {
+        secret: process.env.REFRESH_TOKEN_KEY,
+      });
+      const foundUserById = await this.usersService.findUserById(
+        verifiedToken.userId,
+      );
+      return {
+        username: foundUserById.username,
+        avatar: foundUserById.avatar,
+      };
+    } catch (error) {
+      return null;
+    }
   }
 
   async isUsernameExists(username: string): Promise<boolean> {

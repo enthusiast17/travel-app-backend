@@ -1,40 +1,32 @@
 import { Injectable } from '@nestjs/common';
-import { User } from '@prisma/client';
-import { PrismaService } from 'prisma/prisma.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { User, UserDocument } from 'schemas/user.schema';
 import { IUser } from './user.interface';
 
 @Injectable()
 export class UsersService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
-  async createUser(user: IUser): Promise<User> {
-    return this.prismaService.user.create({
-      data: user,
-    });
+  async createUser(user: IUser): Promise<UserDocument> {
+    return new this.userModel(user).save();
   }
 
-  async findUserById(id: string): Promise<User | null> {
-    return this.prismaService.user.findUnique({
-      where: { id },
-    });
+  async findUserById(id: string): Promise<UserDocument | null> {
+    return this.userModel.findById(id).exec();
   }
 
-  async findUserByUsername(username: string): Promise<User | null> {
-    return this.prismaService.user.findUnique({
-      where: { username },
-    });
+  async findUserByUsername(username: string): Promise<UserDocument | null> {
+    return this.userModel.findOne({ username }).exec();
   }
 
-  async editUser(user: IUser): Promise<User> {
-    return this.prismaService.user.update({
-      where: { username: user.username },
-      data: user,
-    });
+  async editUser(user: IUser): Promise<UserDocument> {
+    return this.userModel
+      .findOneAndUpdate({ username: user.username }, user)
+      .exec();
   }
 
-  async deleteUser(user: IUser): Promise<User> {
-    return this.prismaService.user.delete({
-      where: { username: user.username },
-    });
+  async deleteUser(user: IUser): Promise<UserDocument> {
+    return this.userModel.findOneAndDelete({ username: user.username }).exec();
   }
 }

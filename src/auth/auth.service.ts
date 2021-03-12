@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
-import { User } from '@prisma/client';
 import { genSalt, hash, compare } from 'bcrypt';
+import { User } from 'schemas/user.schema';
 import { IUser } from 'src/users/user.interface';
 import { UsersService } from 'src/users/users.service';
 import { IAuthToken, IJWTData, IJWTSign, IUserHided } from './auth.interface';
@@ -33,7 +33,7 @@ export class AuthService {
       password: hashedPassword,
     });
     const jwtData: IJWTData = {
-      userId: registeredUser.id,
+      userId: registeredUser._id,
       username: registeredUser.username,
     };
     return {
@@ -46,11 +46,11 @@ export class AuthService {
   }
 
   async login(username: string, password: string): Promise<IAuthToken | null> {
-    const user: User = await this.usersService.findUserByUsername(username);
+    const user = await this.usersService.findUserByUsername(username);
     if (!user || !(await compare(password, user.password))) {
       return null;
     }
-    const jwtData: IJWTData = { userId: user.id, username: user.username };
+    const jwtData: IJWTData = { userId: user._id, username: user.username };
     return {
       refreshToken: await this.generateToken(
         jwtData,

@@ -10,6 +10,6 @@ async function bootstrap() {
   });
   app.use(json({ limit: '50mb' }));
   app.useGlobalPipes(new ValidationPipe());
-  await app.listen(3000);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();

@@ -5,8 +5,7 @@ This is a backend repository for [client repository](https://github.com/petrgali
 **Technologies:**
 - TypeScript
 - Nest.js
-- Prisma
-- SQLite
+- MongoDB, Mongoose
 
 **Setup:**
 

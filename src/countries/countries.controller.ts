@@ -31,7 +31,7 @@ export class CountriesController {
     return this.counrtriesService.createCountry(countryDto);
   }
 
-  @Get()
+  @Get('/list')
   async getCountriesByLang(@Query('lang') lang): Promise<CountryDocument[]> {
     if (!['kz', 'en', 'ru'].includes(lang)) {
       throw new HttpException(
@@ -45,5 +45,22 @@ export class CountriesController {
     }
 
     return this.counrtriesService.getCountryListByLang(lang);
+  }
+
+  @Get('/single')
+  async findCountryById(@Query('id') id): Promise<CountryDocument> {
+    const response = await this.counrtriesService.findCountryById(id);
+    if (!response) {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'Country is not found',
+          error: 'Bad Request',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    return response;
   }
 }

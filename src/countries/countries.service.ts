@@ -18,8 +18,13 @@ export class CountriesService {
     return this.counryModel.find({ lang }).exec();
   }
 
-  async findCountryById(id: string): Promise<CountryDocument> {
-    return this.counryModel.findById(id).exec();
+  async findCountryById(id: string): Promise<CountryDocument | null> {
+    try {
+      const country = await this.counryModel.findById(id).exec();
+      return country;
+    } catch (error) {
+      return null;
+    }
   }
 
   async editCountry(countryDto: CountryDto): Promise<CountryDocument> {

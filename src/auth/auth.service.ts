@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { genSalt, hash, compare } from 'bcrypt';
 import { User } from 'schemas/user.schema';
-import { IUser } from 'src/users/user.interface';
+import { IUser } from 'src/users/users.interface';
 import { UsersService } from 'src/users/users.service';
 import { IAuthToken, IJWTData, IJWTSign, IUserHided } from './auth.interface';
 

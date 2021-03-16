@@ -16,7 +16,7 @@ import { CountriesService } from './countries.service';
 
 @Controller('countries')
 export class CountriesController {
-  constructor(private counrtriesService: CountriesService) {}
+  constructor(private countriesService: CountriesService) {}
 
   @Post('/create')
   async createCountry(
@@ -28,7 +28,7 @@ export class CountriesController {
       throw new ForbiddenException();
     }
 
-    return this.counrtriesService.createCountry(countryDto);
+    return this.countriesService.createCountry(countryDto);
   }
 
   @Get('/list')
@@ -44,23 +44,54 @@ export class CountriesController {
       );
     }
 
-    return this.counrtriesService.getCountryListByLang(lang);
+    return this.countriesService.getCountryListByLang(lang);
   }
 
   @Get('/single')
-  async findCountryById(@Query('id') id): Promise<CountryDocument> {
-    const response = await this.counrtriesService.findCountryById(id);
-    if (!response) {
+  async findCountryByIdOrNameAndLang(
+    @Query('id') id,
+    @Query('ISOCode') ISOCode,
+    @Query('lang') lang,
+  ): Promise<CountryDocument> {
+    if (id) {
+      const response = await this.countriesService.findCountryById(id);
+      if (!response) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'Country is not found',
+            error: 'Bad Request',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
+      return response;
+    } else if (ISOCode && lang) {
+      const response = await this.countriesService.findCountryByISOCodeAndLang(
+        ISOCode,
+        lang,
+      );
+      if (!response) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'Country is not found',
+            error: 'Bad Request',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      return response;
+    } else {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          message: 'Country is not found',
+          message: 'Find single country by id or ISOCode and lang',
           error: 'Bad Request',
         },
         HttpStatus.BAD_REQUEST,
       );
     }
-
-    return response;
   }
 }

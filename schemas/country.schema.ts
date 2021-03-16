@@ -17,23 +17,26 @@ export class Country {
   @Prop({ type: String, required: true })
   previewImageUrl: string;
 
-  @Prop({ type: [String], required: true })
-  imageUrlList: string[];
+  @Prop({
+    type: [{ title: String, description: String, url: String }],
+    required: true,
+  })
+  imageUrlList: { title: string; description: string; url: string }[];
 
   @Prop({ type: String, required: true })
   videoUrl: string;
 
   @Prop({ type: String, required: true })
-  currency: string;
-
-  @Prop({ type: String, required: true })
   ISOCode: string;
 
-  @Prop({ type: [Number], required: true })
-  capitalCoordinates: number[];
+  @Prop({ type: String, required: true })
+  currencyCode: string;
 
-  @Prop({ type: [[[Number]]], required: true })
-  countryCoordinates: number[][][];
+  @Prop({ type: String, required: true })
+  timezone: string;
+
+  @Prop({ type: String, required: true })
+  geoJsonUrl: string;
 
   @Prop({ type: String, required: true })
   lang: string;

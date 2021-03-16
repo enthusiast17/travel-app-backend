@@ -36,6 +36,8 @@ export function IsCountryCoordinates(validationOptions?: ValidationOptions) {
             Array.isArray(value[0]) &&
             value[0].length > 0 &&
             Array.isArray(value[0][0]) &&
+            value[0][0].length > 0 &&
+            Array.isArray(value[0][0][0]) &&
             value.every((pArr: any) =>
               pArr.every(
                 (ppArr: any) =>
@@ -63,7 +65,9 @@ export function IsImageUrlList(validationOptions?: ValidationOptions) {
         validate(value: any) {
           return (
             Array.isArray(value) &&
-            value.every((element) => typeof element === 'string')
+            value.every(
+              (element) => element.title && element.description && element.url,
+            )
           );
         },
       },

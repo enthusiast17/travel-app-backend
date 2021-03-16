@@ -34,6 +34,10 @@ export class CountriesService {
     return this.countryModel.findOne({ ISOCode, lang }).exec();
   }
 
+  async findCountryByISOCode(ISOCode: string): Promise<CountryDocument | null> {
+    return this.countryModel.findOne({ ISOCode }).exec();
+  }
+
   async editCountry(countryDto: CountryDto): Promise<CountryDocument> {
     return this.countryModel
       .findOneAndUpdate(

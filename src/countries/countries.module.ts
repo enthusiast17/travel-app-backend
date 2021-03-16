@@ -8,7 +8,6 @@ import { CountriesService } from './countries.service';
 @Module({
   imports: [
     ConfigModule.forRoot({}),
-    CountriesModule,
     MongooseModule.forFeature([{ name: Country.name, schema: CountrySchema }]),
   ],
   controllers: [CountriesController],

@@ -104,11 +104,11 @@ export class CountriesController {
         capitalEN,
       );
 
-      if (!countries) {
+      if (countries.length === 0) {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
-            message: 'Country is not found',
+            message: 'Country or capital is not found',
             error: 'Bad Request',
           },
           HttpStatus.BAD_REQUEST,

@@ -59,20 +59,34 @@ export class CountriesController {
   }> {
     if (id) {
       const foundCountryById = await this.countriesService.findCountryById(id);
+
       if (!foundCountryById) {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
-            message: 'Country is not found',
+            message: 'Country and capital is not found',
             error: 'Bad Request',
           },
           HttpStatus.BAD_REQUEST,
         );
       }
+
       const countries: CountryDocument[] = await this.countriesService.findCountriesByNameENAndCapitalEN(
         foundCountryById.nameEN,
         foundCountryById.capitalEN,
       );
+
+      if (countries.length === 0) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'Country or capital is not found',
+            error: 'Bad Request',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+
       return countries.reduce(
         (response, country) => {
           response[country.lang] = country;

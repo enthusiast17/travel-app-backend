@@ -52,10 +52,45 @@ export class CountriesController {
     @Query('id') id,
     @Query('nameEN') nameEN,
     @Query('capitalEN') capitalEN,
-  ): Promise<CountryDocument> {
+  ): Promise<{
+    kz: CountryDocument;
+    ru: CountryDocument;
+    en: CountryDocument;
+  }> {
     if (id) {
-      const response = await this.countriesService.findCountryById(id);
-      if (!response) {
+      const foundCountryById = await this.countriesService.findCountryById(id);
+      if (!foundCountryById) {
+        throw new HttpException(
+          {
+            status: HttpStatus.BAD_REQUEST,
+            message: 'Country is not found',
+            error: 'Bad Request',
+          },
+          HttpStatus.BAD_REQUEST,
+        );
+      }
+      const countries: CountryDocument[] = await this.countriesService.findCountriesByNameENAndCapitalEN(
+        foundCountryById.nameEN,
+        foundCountryById.capitalEN,
+      );
+      return countries.reduce(
+        (response, country) => {
+          response[country.lang] = country;
+          return response;
+        },
+        {
+          kz: {} as CountryDocument,
+          ru: {} as CountryDocument,
+          en: {} as CountryDocument,
+        },
+      );
+    } else if (nameEN && capitalEN) {
+      const countries: CountryDocument[] = await this.countriesService.findCountriesByNameENAndCapitalEN(
+        nameEN,
+        capitalEN,
+      );
+
+      if (!countries) {
         throw new HttpException(
           {
             status: HttpStatus.BAD_REQUEST,
@@ -66,23 +101,17 @@ export class CountriesController {
         );
       }
 
-      return response;
-    } else if (nameEN && capitalEN) {
-      const response = await this.countriesService.findCountryByNameENAndCapitalEN(
-        nameEN,
-        capitalEN,
+      return countries.reduce(
+        (response, country) => {
+          response[country.lang] = country;
+          return response;
+        },
+        {
+          kz: {} as CountryDocument,
+          ru: {} as CountryDocument,
+          en: {} as CountryDocument,
+        },
       );
-      if (!response) {
-        throw new HttpException(
-          {
-            status: HttpStatus.BAD_REQUEST,
-            message: 'Country is not found',
-            error: 'Bad Request',
-          },
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      return response;
     } else {
       throw new HttpException(
         {

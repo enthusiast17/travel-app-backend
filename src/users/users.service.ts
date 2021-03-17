@@ -20,9 +20,12 @@ export class UsersService {
     return this.userModel.findOne({ username }).exec();
   }
 
-  async editUser(user: IUser): Promise<UserDocument> {
+  async editUser(user: {
+    username: string;
+    avatar: string | null;
+  }): Promise<UserDocument> {
     return this.userModel
-      .findOneAndUpdate({ username: user.username }, user)
+      .findOneAndUpdate({ username: user.username }, user, { new: true })
       .exec();
   }
 

@@ -6,6 +6,7 @@ import {
   IsString,
   MaxLength,
   MinLength,
+  ValidateIf,
 } from 'class-validator';
 
 export class RegisterDto {
@@ -46,4 +47,10 @@ export class LoginDto {
   @IsString({ message: 'Password must be a string' })
   @IsNotEmpty({ message: "Password can't be empty" })
   password: string;
+}
+
+export class UpdateAvatarDto {
+  @IsBase64({ message: 'Avatar must be a base64' })
+  @ValidateIf((object, value) => value !== null)
+  avatar: string | null;
 }

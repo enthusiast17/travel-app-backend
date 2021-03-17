@@ -7,11 +7,13 @@ import {
   HttpStatus,
   Post,
   Request,
+  UseGuards,
 } from '@nestjs/common';
 import { ExtractJwt } from 'passport-jwt';
-import { LoginDto, RegisterDto } from './auth.dto';
+import { UpdateAvatarDto, LoginDto, RegisterDto } from './auth.dto';
 import { IAuthToken, IUserHided } from './auth.interface';
 import { AuthService } from './auth.service';
+import { JwtAuthGuard } from './jwt-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -81,5 +83,17 @@ export class AuthController {
     }
 
     return response;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/avatar')
+  async updateAvatar(
+    @Request() request,
+    @Body() updateAvatar: UpdateAvatarDto,
+  ): Promise<IUserHided> {
+    return this.authService.updateAvatar(
+      request.user.userId,
+      updateAvatar.avatar,
+    );
   }
 }

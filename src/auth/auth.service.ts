@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { genSalt, hash, compare } from 'bcrypt';
-import { User } from 'schemas/user.schema';
+import { User, UserDocument } from 'schemas/user.schema';
 import { IUser } from 'src/users/users.interface';
 import { UsersService } from 'src/users/users.service';
 import { IAuthToken, IJWTData, IJWTSign, IUserHided } from './auth.interface';
@@ -75,6 +75,18 @@ export class AuthService {
     } catch (error) {
       return null;
     }
+  }
+
+  async updateAvatar(
+    userId: string,
+    avatar: string | null,
+  ): Promise<IUserHided | null> {
+    const user: UserDocument = await this.usersService.findUserById(userId);
+    const editedUser = await this.usersService.editUser({
+      username: user.username,
+      avatar: avatar,
+    });
+    return { username: editedUser.username, avatar: editedUser.avatar };
   }
 
   async isUsernameExists(username: string): Promise<boolean> {

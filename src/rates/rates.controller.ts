@@ -76,7 +76,6 @@ export class RatesController {
     };
   }
 
-  @UseGuards(JwtAuthGuard)
   @Get('/single')
   async findRatesByISOCode(
     @Query('ISOCode') ISOCode,

@@ -27,11 +27,11 @@ export class CountriesService {
     }
   }
 
-  async findCountryByISOCodeAndLang(
-    ISOCode: string,
-    lang: string,
+  async findCountryByNameENAndCapitalEN(
+    nameEN: string,
+    capitalEN: string,
   ): Promise<CountryDocument | null> {
-    return this.countryModel.findOne({ ISOCode, lang }).exec();
+    return this.countryModel.findOne({ nameEN, capitalEN }).exec();
   }
 
   async findCountryByISOCode(ISOCode: string): Promise<CountryDocument | null> {

@@ -48,10 +48,10 @@ export class CountriesController {
   }
 
   @Get('/single')
-  async findCountryByIdOrNameAndLang(
+  async findCountryByIdOrNameENAndCapitalEN(
     @Query('id') id,
-    @Query('ISOCode') ISOCode,
-    @Query('lang') lang,
+    @Query('nameEN') nameEN,
+    @Query('capitalEN') capitalEN,
   ): Promise<CountryDocument> {
     if (id) {
       const response = await this.countriesService.findCountryById(id);
@@ -67,10 +67,10 @@ export class CountriesController {
       }
 
       return response;
-    } else if (ISOCode && lang) {
-      const response = await this.countriesService.findCountryByISOCodeAndLang(
-        ISOCode,
-        lang,
+    } else if (nameEN && capitalEN) {
+      const response = await this.countriesService.findCountryByNameENAndCapitalEN(
+        nameEN,
+        capitalEN,
       );
       if (!response) {
         throw new HttpException(
@@ -87,7 +87,7 @@ export class CountriesController {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          message: 'Find single country by id or ISOCode and lang',
+          message: 'Find single country by id or nameEN and capitalEN',
           error: 'Bad Request',
         },
         HttpStatus.BAD_REQUEST,

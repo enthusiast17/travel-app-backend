@@ -6,6 +6,12 @@ export type CountryDocument = Country & mongoose.Document;
 @Schema()
 export class Country {
   @Prop({ type: String, required: true })
+  capitalEN: string;
+
+  @Prop({ type: String, required: true })
+  nameEN: string;
+
+  @Prop({ type: String, required: true })
   capital: string;
 
   @Prop({ type: String, required: true })

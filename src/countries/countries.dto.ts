@@ -2,6 +2,14 @@ import { IsNotEmpty, IsString } from 'class-validator';
 import { IsImageUrlList } from './countries.decorators';
 
 export class CountryDto {
+  @IsString({ message: 'Capital EN must be a string' })
+  @IsNotEmpty({ message: "Capital EN can't be empty" })
+  capitalEN: string;
+
+  @IsString({ message: 'Name EN must be a string' })
+  @IsNotEmpty({ message: "Name EN can't be empty" })
+  nameEN: string;
+
   @IsString({ message: 'Capital must be a string' })
   @IsNotEmpty({ message: "Capital can't be empty" })
   capital: string;

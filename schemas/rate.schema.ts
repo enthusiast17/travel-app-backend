@@ -5,11 +5,14 @@ export type RateDocument = Rate & mongoose.Document;
 
 @Schema()
 export class Rate {
-  @Prop({ type: String, unique: true, required: true })
+  @Prop({ type: String, required: true })
   userId: string;
 
-  @Prop({ type: String, unique: true, required: true })
-  ISOCode: string;
+  @Prop({ type: String, required: true })
+  country: string;
+
+  @Prop({ type: String, required: true })
+  capital: string;
 
   @Prop({ type: Number, required: true })
   rateNumber: number;

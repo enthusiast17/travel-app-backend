@@ -30,11 +30,18 @@ export class RatesController {
     @Request() request,
     @Body() rateDto: RateDto,
   ): Promise<IRateHided> {
-    if (!(await this.countriesService.findCountryByISOCode(rateDto.ISOCode))) {
+    if (
+      (
+        await this.countriesService.findCountriesByNameENAndCapitalEN(
+          rateDto.country,
+          rateDto.capital,
+        )
+      ).length === 0
+    ) {
       throw new HttpException(
         {
           status: HttpStatus.BAD_REQUEST,
-          message: 'ISO Code is not found',
+          message: 'Country or capital is not found',
           error: 'Bad Request',
         },
         HttpStatus.BAD_REQUEST,
@@ -53,7 +60,11 @@ export class RatesController {
     }
 
     if (
-      await this.ratesService.isUserRated(request.user.userId, rateDto.ISOCode)
+      await this.ratesService.isUserRated(
+        request.user.userId,
+        rateDto.country,
+        rateDto.capital,
+      )
     ) {
       throw new HttpException(
         {
@@ -72,18 +83,38 @@ export class RatesController {
     const user = await this.usersService.findUserById(request.user.userId);
     return {
       user: { username: user.username, avatar: user.avatar },
+      country: rate.country,
+      capital: rate.capital,
       rateNumber: rate.rateNumber,
     };
   }
 
   @Get('/single')
-  async findRatesByISOCode(
-    @Query('ISOCode') ISOCode,
+  async findRatesByCountryAndCapital(
+    @Query('country') country,
+    @Query('capital') capital,
   ): Promise<ISingleCountryRate> {
-    return {
-      rates: await this.ratesService.findRatesByISOCode(ISOCode),
-      averageRateNumber:
-        (await this.ratesService.getAverageByISOCode(ISOCode)) || 0,
-    };
+    if (capital && country) {
+      return {
+        rates: await this.ratesService.findRatesByCountryAndCapital(
+          country,
+          capital,
+        ),
+        averageRateNumber:
+          (await this.ratesService.getAverageByCountryAndCapital(
+            country,
+            capital,
+          )) || 0,
+      };
+    } else {
+      throw new HttpException(
+        {
+          status: HttpStatus.BAD_REQUEST,
+          message: 'Find single rating by capital and country',
+          error: 'Bad Request',
+        },
+        HttpStatus.BAD_REQUEST,
+      );
+    }
   }
 }
